@@ -13,6 +13,7 @@ module Dateslices
         aggregation_column = args[2].blank? ? '*' : args[2]
 
         sql = ["#{aggregation}(#{aggregation_column}) as count"]
+        sql = ["count(distinct #{aggregation_column}) as count"] if aggregation == 'distinct'
 
         time_filter = case connection.adapter_name
                         when 'SQLite'
@@ -40,7 +41,7 @@ module Dateslices
             { date_slice: slice(c), aggregation.to_sym => c['count'] }
           end
         end
-      end 
+      end
     end
 
     def slice(c)
